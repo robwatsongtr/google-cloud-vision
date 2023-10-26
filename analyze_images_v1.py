@@ -4,7 +4,7 @@ from google.oauth2 import service_account
 from google.cloud import storage
 
 credentials = service_account.Credentials.from_service_account_file(
-    "polished-studio-402920-36deee5c2f6f.json",
+    "polished-studio-402920-41100c8f0b19.json",
     scopes=["https://www.googleapis.com/auth/cloud-platform"],
 )
 
