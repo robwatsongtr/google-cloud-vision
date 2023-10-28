@@ -37,7 +37,6 @@ def analyze_image(bucket, image_blob_name):
         return labels
 
     except google.api_core.exceptions.GoogleAPICallError as e:
-        # Handle Vision API specific error
         print(f"Google Cloud Vision API Error: {str(e)}")
         return []
     
@@ -62,7 +61,6 @@ def bulk_analyze_images(bucket_name, bucket_path):
     except Exception as e:
         # Handle exceptions here, e.g., log the error or return an error message
         print(f"An error occurred: {str(e)}")
-
 
 if __name__ == "__main__":
     bucket_name = 'photo-bucket_polished-studio-402920'
