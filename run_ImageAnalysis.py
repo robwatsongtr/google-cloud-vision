@@ -1,7 +1,15 @@
 from ImageAnalysis import ImageAnalysis
 
 if __name__ == "__main__":
-    # # analyze a single image: 
+
+    # analyze directory of images in google cloud storage to json file
+    img_analyzer = ImageAnalysis(bucket_name = "photo-bucket_polished-studio-402920")
+    bucket_path = 'imgs_for_tagging/'
+    file_name = 'img_tags.json'
+
+    img_analyzer.bulk_analyze_images_to_json(bucket_path, file_name)
+
+    # # analyze a single image in google cloud storage: 
     # img_analyzer = ImageAnalysis(bucket_name = "photo-bucket_polished-studio-402920")
     # image_blob_name = 'imgs_for_tagging/IMG_4873.jpg'
     # labels = img_analyzer.analyze_image(image_blob_name)
@@ -16,10 +24,10 @@ if __name__ == "__main__":
 
     # print()
 
-    # analyze directory of images to console:
-    img_analyzer = ImageAnalysis(bucket_name = "photo-bucket_polished-studio-402920")
+    # analyze directory of images in google cloud storage to console:
+    # img_analyzer = ImageAnalysis(bucket_name = "photo-bucket_polished-studio-402920")
 
-    bucket_path = 'imgs_for_tagging/'
+    # bucket_path = 'imgs_for_tagging/'
 
-    img_analyzer.bulk_analyze_images_to_console(bucket_path)
+    # img_analyzer.bulk_analyze_images_to_console(bucket_path)
     
