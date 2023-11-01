@@ -1,5 +1,6 @@
 import os
 import json 
+import xml.etree.ElementTree as ET
 from google.cloud import vision
 from google.oauth2 import service_account
 from google.cloud import storage
@@ -99,6 +100,24 @@ class ImageAnalysis:
             with open(file_name, "w") as json_file:
                 json.dump(data_list, json_file, indent = 4)       
         
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+
+    def bulk_analyze_images_to_XML(self, bucket_path, file_name):
+        try:
+            bucket = self.storage_client.get_bucket(self.bucket_name)
+            subdirectory_path = bucket_path
+            data_list = []
+            root = ET.Element("data")
+            
+            for blob in bucket.list_blobs():
+                if blob.name.startswith(subdirectory_path) and self.is_image_blob(blob):
+                    print(f"File name: {blob.name}")
+                    labels = self.analyze_image(blob.name)
+                    filename = blob.name.split("/")[-1] # Extract just the filename
+                    
+
+
         except Exception as e:
             print(f"An error occurred: {str(e)}")
 
