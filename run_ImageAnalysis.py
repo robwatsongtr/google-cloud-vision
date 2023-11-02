@@ -2,12 +2,12 @@ from ImageAnalysis import ImageAnalysis
 
 if __name__ == "__main__":
 
-    # analyze directory of images in google cloud storage to json file
+    
     img_analyzer = ImageAnalysis(bucket_name = "photo-bucket_polished-studio-402920")
     bucket_path = 'imgs_for_tagging/'
     file_name = 'img_tags.json'
 
-    img_analyzer.bulk_analyze_images_to_json(bucket_path, file_name)
+    img_analyzer.bulk_analyze_images_to_XML(bucket_path, file_name)
 
     # # analyze a single image in google cloud storage: 
     # img_analyzer = ImageAnalysis(bucket_name = "photo-bucket_polished-studio-402920")

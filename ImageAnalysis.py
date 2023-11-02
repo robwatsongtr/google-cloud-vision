@@ -74,6 +74,7 @@ class ImageAnalysis:
         except Exception as e:
             print(f"An error occurred: {str(e)}")
 
+
     def bulk_analyze_images_to_json(self, bucket_path, file_name):
         try:
             bucket = self.storage_client.get_bucket(self.bucket_name)
@@ -107,16 +108,41 @@ class ImageAnalysis:
         try:
             bucket = self.storage_client.get_bucket(self.bucket_name)
             subdirectory_path = bucket_path
-            data_list = []
-            root = ET.Element("data")
+            data_list = []     
             
             for blob in bucket.list_blobs():
                 if blob.name.startswith(subdirectory_path) and self.is_image_blob(blob):
                     print(f"File name: {blob.name}")
                     labels = self.analyze_image(blob.name)
                     filename = blob.name.split("/")[-1] # Extract just the filename
-                    
+                    if labels:
+                        new_data = { 
+                            "Filename": filename, 
+                            "Labels": labels  
+                        }        
+                    else: 
+                        new_data = { 
+                            "Filename": filename, 
+                            "Labels": "no labels detected." 
+                        }        
+                    data_list.append(new_data)
+            
+            root = ET.Element("data")
 
+            for data_dict in data_list:
+                dict_element = ET.SubElement(root, "dictionary")
+                for key, value in data_dict.items():
+                    item_element = ET.SubElement(dict_element, key)
+                    item_element.text = value
+
+            tree = ET.ElementTree(root)
+
+            # Convert the XML tree to a string
+            xml_string = ET.tostring(root, encoding="utf-8", method="xml")
+
+            # Write the XML string to a file
+            with open("data.xml", "wb") as file:
+                file.write(xml_string)
 
         except Exception as e:
             print(f"An error occurred: {str(e)}")
