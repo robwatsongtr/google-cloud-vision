@@ -143,16 +143,15 @@ class ImageAnalysis:
                             "Labels": "no labels detected." 
                         }        
                     data_list.append(new_data)
-
             
             # Flatten out the nested lists of labels 
-            flattened_data = [ self.flatten_data(item) for item in data_list ]
+            flattened_struct = [ self.flatten_data(item) for item in data_list ]
 
             # define root of XML tree 
             root = ET.Element("data")
 
             # iterate and build XML tree
-            for data_dict in flattened_data:
+            for data_dict in flattened_struct:
                 dict_element = ET.SubElement(root, "Image")
                 for key, value in data_dict.items():
                     item_element = ET.SubElement(dict_element, key)
