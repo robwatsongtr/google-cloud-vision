@@ -5,7 +5,7 @@ if __name__ == "__main__":
     
     img_analyzer = ImageAnalysis(bucket_name = "photo-bucket_polished-studio-402920")
     bucket_path = 'imgs_for_tagging/'
-    file_name = 'img_tags.json'
+    file_name = 'img_tags.xml'
 
     img_analyzer.bulk_analyze_images_to_XML(bucket_path, file_name)
 

@@ -5,6 +5,7 @@ from google.cloud import vision
 from google.oauth2 import service_account
 from google.cloud import storage
 import google.api_core.exceptions
+import xml.dom.minidom
 
 class ImageAnalysis:
     # constructor: 
@@ -74,6 +75,22 @@ class ImageAnalysis:
         except Exception as e:
             print(f"An error occurred: {str(e)}")
 
+    def flatten_data(self, d):
+        flattened = {}
+
+        # recursively flatten any nested dics or lists 
+        def flatten(x, name=""):
+            if type(x) is dict:
+                for a in x:
+                    flatten(x[a], name + a + "_")
+            elif type(x) is list:
+                for i, a in enumerate(x):
+                    flatten(a, name + str(i) + "_")
+            else:
+                flattened[name[:-1]] = x
+
+        flatten(d)
+        return flattened
 
     def bulk_analyze_images_to_json(self, bucket_path, file_name):
         try:
@@ -126,32 +143,37 @@ class ImageAnalysis:
                             "Labels": "no labels detected." 
                         }        
                     data_list.append(new_data)
+
             
+            # Flatten out the nested lists of labels 
+            flattened_data = [ self.flatten_data(item) for item in data_list ]
+
+            # define root of XML tree 
             root = ET.Element("data")
 
-            for data_dict in data_list:
-                dict_element = ET.SubElement(root, "dictionary")
+            # iterate and build XML tree
+            for data_dict in flattened_data:
+                dict_element = ET.SubElement(root, "Image")
                 for key, value in data_dict.items():
                     item_element = ET.SubElement(dict_element, key)
                     item_element.text = value
 
             tree = ET.ElementTree(root)
 
-            # Convert the XML tree to a string
-            xml_string = ET.tostring(root, encoding="utf-8", method="xml")
+            # Serialize the XML data and format it for readability
+            xml_str = ET.tostring(root, encoding="unicode")
+            pretty_xml = xml.dom.minidom.parseString(xml_str).toprettyxml()
 
-            # Write the XML string to a file
-            with open("data.xml", "wb") as file:
-                file.write(xml_string)
-
+            # Write the formatted XML to a file
+            with open(file_name, "w") as xml_file:
+                xml_file.write(pretty_xml)
+            
         except Exception as e:
             print(f"An error occurred: {str(e)}")
 
 
-         
 
-  
-
+        
 
 
 
