@@ -92,7 +92,7 @@ class ImageAnalysis:
         flatten(d)
         return flattened
 
-    def bulk_analyze_images_to_json(self, bucket_path, file_name):
+    def get_labels_from_images(self, bucket_path, file_name):
         try:
             bucket = self.storage_client.get_bucket(self.bucket_name)
             subdirectory_path = bucket_path
@@ -115,37 +115,29 @@ class ImageAnalysis:
                         }        
                     data_list.append(new_data)
 
+            return data_list
+            
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+
+
+    def bulk_analyze_images_to_json(self, bucket_path, file_name):
+        try:
+            images_labels = self.get_labels_from_images(bucket_path, file_name)
+
             with open(file_name, "w") as json_file:
-                json.dump(data_list, json_file, indent = 4)       
+                json.dump(images_labels, json_file, indent = 4)       
         
         except Exception as e:
             print(f"An error occurred: {str(e)}")
 
+
     def bulk_analyze_images_to_XML(self, bucket_path, file_name):
         try:
-            bucket = self.storage_client.get_bucket(self.bucket_name)
-            subdirectory_path = bucket_path
-            data_list = []     
-            
-            for blob in bucket.list_blobs():
-                if blob.name.startswith(subdirectory_path) and self.is_image_blob(blob):
-                    print(f"File name: {blob.name}")
-                    labels = self.analyze_image(blob.name)
-                    filename = blob.name.split("/")[-1] # Extract just the filename
-                    if labels:
-                        new_data = { 
-                            "Filename": filename, 
-                            "Labels": labels  
-                        }        
-                    else: 
-                        new_data = { 
-                            "Filename": filename, 
-                            "Labels": "no labels detected." 
-                        }        
-                    data_list.append(new_data)
+            images_labels = self.get_labels_from_images(bucket_path, file_name)
             
             # Flatten out the nested lists of labels 
-            flattened_struct = [ self.flatten_data(item) for item in data_list ]
+            flattened_struct = [ self.flatten_data(item) for item in images_labels ]
 
             # define root of XML tree 
             root = ET.Element("data")
