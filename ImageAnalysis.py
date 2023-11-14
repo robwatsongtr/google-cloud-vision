@@ -162,6 +162,21 @@ class ImageAnalysis:
         except Exception as e:
             print(f"An error occurred: {str(e)}")
 
+    def extract_labels(self, file_name):
+        try:
+            with open(file_name, 'r') as file:
+                data_array = json.load(file)
+
+            
+
+        except FileNotFoundError:
+            print("Error: file not found.")
+        except json.JSONDecodeError as e:
+            print(f"Error deconding JSON: {e}")
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+        
+
 
 
         
