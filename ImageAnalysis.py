@@ -137,7 +137,7 @@ class ImageAnalysis:
             images_labels = self.get_labels_from_images(bucket_path, file_name)
             
             # Flatten out the nested lists of labels 
-            flattened_struct = [ self.flatten_data(item) for item in images_labels ]
+            flattened_struct = [self.flatten_data(item) for item in images_labels]
 
             # define root of XML tree 
             root = ET.Element("data")
